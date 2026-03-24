@@ -12,6 +12,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { useI18n } from "@/components/i18n/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { loadOnboardingData, type OnboardingSelections } from "@/lib/onboarding-store";
@@ -40,6 +41,7 @@ const deltaToneClass: Record<DeltaTone, string> = {
 };
 
 export default function DashboardPage() {
+  const { t } = useI18n();
   const [data, setData] = useState<OnboardingSelections | null>(null);
 
   useEffect(() => {
@@ -50,46 +52,48 @@ export default function DashboardPage() {
     () =>
       [
         {
-          label: "Conteúdos criados",
+          label: t("dashboard.statContents"),
           value: "24",
           change: "+12%",
           deltaTone: "positive" as const,
           icon: <FileText className="h-3.5 w-3.5" />,
         },
         {
-          label: "Posts agendados",
+          label: t("dashboard.statScheduled"),
           value: String(data?.channels.length ? data.channels.length * 4 : 18),
           change: "+8%",
           deltaTone: "positive" as const,
           icon: <Calendar className="h-3.5 w-3.5" />,
         },
         {
-          label: "Personas ativas",
+          label: t("dashboard.statPersonas"),
           value: String(data?.selectedPersonas?.length || data?.generatedPersonas?.length || 3),
           change: "",
           deltaTone: undefined,
           icon: <Users className="h-3.5 w-3.5" />,
         },
         {
-          label: "Taxa de engajamento",
+          label: t("dashboard.statEngagement"),
           value: "4.2%",
           change: "+0.8%",
           deltaTone: "positive" as const,
           icon: <TrendingUp className="h-3.5 w-3.5" />,
         },
       ] as const,
-    [data],
+    [data, t],
   );
 
   const upcomingPosts = useMemo(() => (data ? generatePosts(data) : []), [data]);
 
+  const greeting = data?.businessName
+    ? `${t("dashboard.greeting")}, ${data.businessName}! 👋`
+    : `${t("dashboard.greetingGeneric")}! 👋`;
+
   return (
     <div className="space-y-5">
       <motion.div initial={false} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-          {data?.businessName ? `Bom dia, ${data.businessName}! 👋` : "Bom dia! 👋"}
-        </h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">Resumo da sua estratégia de conteúdo</p>
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">{greeting}</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
       </motion.div>
 
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
@@ -124,10 +128,10 @@ export default function DashboardPage() {
             >
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                  <Users className="h-3.5 w-3.5 text-primary" /> Suas personas
+                  <Users className="h-3.5 w-3.5 text-primary" /> {t("dashboard.yourPersonas")}
                 </h2>
                 <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground" asChild>
-                  <Link href="/personas">Ver todas</Link>
+                  <Link href="/personas">{t("dashboard.seeAll")}</Link>
                 </Button>
               </div>
               <div className="space-y-1.5">
@@ -173,10 +177,10 @@ export default function DashboardPage() {
             >
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                  <Target className="h-3.5 w-3.5 text-primary" /> Estratégias ativas
+                  <Target className="h-3.5 w-3.5 text-primary" /> {t("dashboard.activeStrategies")}
                 </h2>
                 <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground" asChild>
-                  <Link href="/nova-estrategia">Nova estratégia</Link>
+                  <Link href="/nova-estrategia">{t("dashboard.newStrategy")}</Link>
                 </Button>
               </div>
               <div className="space-y-1.5">
@@ -194,7 +198,9 @@ export default function DashboardPage() {
                         <span className="text-lg leading-none">{s?.emoji ?? "📌"}</span>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-medium leading-tight text-foreground">{title}</p>
-                          <p className="line-clamp-1 text-[0.7rem] text-muted-foreground">{s?.desc ?? "Estratégia selecionada no onboarding."}</p>
+                          <p className="line-clamp-1 text-[0.7rem] text-muted-foreground">
+                            {s?.desc ?? t("dashboard.strategyFallback")}
+                          </p>
                         </div>
                         <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                       </motion.div>
@@ -211,7 +217,7 @@ export default function DashboardPage() {
         <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="glass-card rounded-xl p-4">
           <div className="mb-2.5 flex items-center justify-between">
             <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-              <Flame className="h-3.5 w-3.5 text-primary" /> Tendências selecionadas
+              <Flame className="h-3.5 w-3.5 text-primary" /> {t("dashboard.selectedTrends")}
             </h2>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -232,14 +238,14 @@ export default function DashboardPage() {
 
       <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card rounded-xl p-4">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-foreground">Próximos conteúdos</h2>
+          <h2 className="text-sm font-semibold text-foreground">{t("dashboard.upcoming")}</h2>
           <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground" asChild>
-            <Link href="/calendar">Calendário</Link>
+            <Link href="/calendar">{t("dashboard.calendarLink")}</Link>
           </Button>
         </div>
         <div className="divide-y divide-border/50">
           {upcomingPosts.length === 0 ? (
-            <p className="py-4 text-center text-sm text-muted-foreground">Complete o onboarding para ver sugestões aqui.</p>
+            <p className="py-4 text-center text-sm text-muted-foreground">{t("dashboard.emptyPosts")}</p>
           ) : (
             upcomingPosts.map((post, i) => (
               <motion.div

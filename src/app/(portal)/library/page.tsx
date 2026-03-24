@@ -1,17 +1,20 @@
+"use client";
+
+import { useI18n } from "@/components/i18n/LanguageProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LibraryPage() {
+  const { t } = useI18n();
+
   return (
     <Card>
       <CardHeader>
-        <p className="eyebrow">Biblioteca</p>
-        <CardTitle>Assets e playbooks</CardTitle>
-        <CardDescription>Área pronta para templates, checklists e referências por caminho.</CardDescription>
+        <p className="eyebrow">{t("library.eyebrow")}</p>
+        <CardTitle>{t("library.title")}</CardTitle>
+        <CardDescription>{t("library.description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Vamos usar esta área para distribuir frameworks por perfil e por objetivo de crescimento.
-        </p>
+        <p className="text-sm text-[var(--muted-foreground)]">{t("library.body")}</p>
       </CardContent>
     </Card>
   );

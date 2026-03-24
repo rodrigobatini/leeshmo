@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Lightbulb, Loader2, Sparkles } from "lucide-react";
+import { useI18n } from "@/components/i18n/LanguageProvider";
 import { buildProfileFromOnboardingSelections } from "@/lib/build-generate-profile";
 import { GOAL_OPTIONS, INSIGHT_STRATEGIES, INSIGHT_TRENDS } from "@/lib/insights-options";
 import { OTHER_OPTION } from "@/lib/onboarding-constants";
@@ -20,10 +21,18 @@ type GenerateResponse = {
   paths: string[];
 };
 
-const STEP_LABELS = ["Objetivos", "Tendências", "Estratégias", "Personas"] as const;
-
 export default function NovaEstrategiaPage() {
+  const { t } = useI18n();
   const router = useRouter();
+  const stepLabels = useMemo(
+    () => [
+      t("novaEstrategia.stepGoals"),
+      t("novaEstrategia.stepTrends"),
+      t("novaEstrategia.stepStrategies"),
+      t("novaEstrategia.stepPersonas"),
+    ],
+    [t],
+  );
   const [base, setBase] = useState<OnboardingSelections | null>(null);
   const [step, setStep] = useState(0);
   const [goals, setGoals] = useState<string[]>([]);
@@ -78,14 +87,14 @@ export default function NovaEstrategiaPage() {
         body: JSON.stringify({ profile }),
       });
       if (!response.ok) {
-        let message = "Não foi possível gerar agora. Tente novamente.";
+        let message = t("novaEstrategia.errorGeneric");
         try {
           const j = (await response.json()) as { error?: string };
           if (response.status === 429) {
             message =
               typeof j?.error === "string"
                 ? j.error
-                : "Voce chegou ao limite de geracoes de hoje. Volte amanha.";
+                : t("novaEstrategia.errorQuota");
           } else if (typeof j?.error === "string") message = j.error;
         } catch {
           /* ignore */
@@ -107,7 +116,7 @@ export default function NovaEstrategiaPage() {
       window.dispatchEvent(new Event("onboarding-store-change"));
       router.push("/dashboard");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro inesperado.");
+      setError(e instanceof Error ? e.message : t("common.unexpectedError"));
     } finally {
       setGenerating(false);
     }
@@ -124,15 +133,13 @@ export default function NovaEstrategiaPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-12">
       <div>
-        <p className="eyebrow">Estratégia</p>
-        <h1 className="text-2xl font-bold tracking-tight">Nova estratégia</h1>
-        <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-          Usamos o que já está salvo do seu setup (negócio, público, canais, nicho). Aqui você só redefine foco: objetivos, tendências, modelos e personas — e geramos uma nova rodada de insights e rascunhos.
-        </p>
+        <p className="eyebrow">{t("novaEstrategia.eyebrow")}</p>
+        <h1 className="text-2xl font-bold tracking-tight">{t("novaEstrategia.title")}</h1>
+        <p className="mt-2 max-w-xl text-sm text-muted-foreground">{t("novaEstrategia.intro")}</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {STEP_LABELS.map((label, i) => (
+        {stepLabels.map((label, i) => (
           <span
             key={label}
             className={cn(
@@ -158,7 +165,7 @@ export default function NovaEstrategiaPage() {
             exit={{ opacity: 0 }}
             className="space-y-6"
           >
-            <h2 className="text-lg font-semibold">Quais objetivos guiam esta rodada?</h2>
+            <h2 className="text-lg font-semibold">{t("novaEstrategia.goalsHeading")}</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {GOAL_OPTIONS.map((g, i) => (
                 <SelectionCard
@@ -176,14 +183,14 @@ export default function NovaEstrategiaPage() {
               show={goals.includes(OTHER_OPTION)}
               value={goalsOther}
               onChange={setGoalsOther}
-              placeholder="Ex.: parcerias com marcas, comunidade paga..."
+              placeholder={t("novaEstrategia.otherPlaceholder")}
             />
           </motion.div>
         ) : null}
 
         {step === 1 ? (
           <motion.div key="trends" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
-            <h2 className="mb-2 text-lg font-semibold">Tendências em foco</h2>
+            <h2 className="mb-2 text-lg font-semibold">{t("novaEstrategia.trendsHeading")}</h2>
             {INSIGHT_TRENDS.map((item) => (
               <MiniInsightCard
                 key={item.id}
@@ -198,7 +205,7 @@ export default function NovaEstrategiaPage() {
 
         {step === 2 ? (
           <motion.div key="strategies" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
-            <h2 className="mb-2 text-lg font-semibold">Modelos de estratégia</h2>
+            <h2 className="mb-2 text-lg font-semibold">{t("novaEstrategia.strategiesHeading")}</h2>
             {INSIGHT_STRATEGIES.map((item) => (
               <MiniInsightCard
                 key={item.id}
@@ -213,14 +220,14 @@ export default function NovaEstrategiaPage() {
 
         {step === 3 ? (
           <motion.div key="personas" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
-            <h2 className="mb-2 text-lg font-semibold">Personas prioritárias</h2>
+            <h2 className="mb-2 text-lg font-semibold">{t("novaEstrategia.personasHeading")}</h2>
             {personaNames.length === 0 ? (
               <p className="rounded-xl border border-border/60 bg-muted/30 px-4 py-4 text-sm text-muted-foreground">
-                Ainda não há personas salvas. A geração usará perfis genéricos alinhados ao seu nicho. Você pode{" "}
+                {t("novaEstrategia.noPersonasBody")}
                 <Link href="/onboarding" className="font-medium text-primary underline-offset-4 hover:underline">
-                  revisar o setup completo
-                </Link>{" "}
-                para gerar personas nomeadas antes.
+                  {t("novaEstrategia.reviewSetup")}
+                </Link>
+                {t("novaEstrategia.noPersonasAfter")}
               </p>
             ) : (
               personaNames.map((name) => {
@@ -243,15 +250,15 @@ export default function NovaEstrategiaPage() {
       <div className="flex flex-col gap-3 border-t border-border/50 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <Button type="button" variant="ghost" asChild className="gap-2 self-start">
           <Link href="/dashboard">
-            <ArrowLeft className="h-4 w-4" />
-            Voltar ao dashboard
+              <ArrowLeft className="h-4 w-4" />
+            {t("novaEstrategia.backDashboard")}
           </Link>
         </Button>
         <div className="flex gap-2 sm:ml-auto">
           {step > 0 ? (
             <Button type="button" variant="secondary" onClick={() => setStep((s) => s - 1)} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Anterior
+              {t("novaEstrategia.previous")}
             </Button>
           ) : null}
           {step < 3 ? (
@@ -266,7 +273,7 @@ export default function NovaEstrategiaPage() {
               }
               className="gap-2 rounded-full px-6"
             >
-              Continuar
+              {t("novaEstrategia.continue")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
@@ -279,12 +286,12 @@ export default function NovaEstrategiaPage() {
               {generating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Gerando...
+                  {t("novaEstrategia.generating")}
                 </>
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  Gerar nova estratégia
+                  {t("novaEstrategia.generate")}
                 </>
               )}
             </Button>

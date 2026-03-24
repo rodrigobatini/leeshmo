@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useI18n } from "@/components/i18n/LanguageProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Draft = { title: string; channel: string; cta: string; body: string };
@@ -18,23 +19,24 @@ function getOutput(): SavedOutput | null {
 }
 
 export default function CalendarPage() {
+  const { t } = useI18n();
   const output = useMemo(() => getOutput(), []);
 
   return (
     <Card>
       <CardHeader>
-        <p className="eyebrow">Calendário editorial</p>
-        <CardTitle>Próximos conteúdos</CardTitle>
-        <CardDescription>Planejamento baseado nos drafts gerados no onboarding.</CardDescription>
+        <p className="eyebrow">{t("calendar.eyebrow")}</p>
+        <CardTitle>{t("calendar.title")}</CardTitle>
+        <CardDescription>{t("calendar.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="text-[var(--muted-foreground)]">
-                <th className="pb-2">Canal</th>
-                <th className="pb-2">Título</th>
-                <th className="pb-2">CTA</th>
+                <th className="pb-2">{t("calendar.channel")}</th>
+                <th className="pb-2">{t("calendar.titleCol")}</th>
+                <th className="pb-2">{t("calendar.cta")}</th>
               </tr>
             </thead>
             <tbody>
@@ -49,7 +51,7 @@ export default function CalendarPage() {
               ) : (
                 <tr>
                   <td colSpan={3} className="py-4 text-[var(--muted-foreground)]">
-                    Gere seus drafts no onboarding para popular o calendario.
+                    {t("calendar.emptyHint")}
                   </td>
                 </tr>
               )}
