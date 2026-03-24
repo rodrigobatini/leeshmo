@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1e1e1e;
+  --surface: #515160;
+  --foreground: #f4f1ea;
+  --muted: #c8b8a0;
+  --primary-wood: #7a6f4d;
+  --primary-moss: #5b7a57;
+  --cta: #d6993e;
+  --danger: #c44e39;
+  --neutral-warm: #9f9494;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-primary-wood: var(--primary-wood);
+  --color-primary-moss: var(--primary-moss);
+  --color-cta: var(--cta);
+  --color-danger: var(--danger);
+  --color-neutral-warm: var(--neutral-warm);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+* {
+  border-color: rgb(255 255 255 / 0.12);
+}
+
+.card-surface {
+  background: color-mix(in oklab, var(--surface) 85%, black);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 0.75rem;
+}
+
+.btn-primary {
+  background: var(--cta);
+  color: #17120c;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
