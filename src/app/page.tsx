@@ -8,10 +8,10 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Button } from "@/components/ui/button";
 
 const features = [
-  { icon: <Sparkles className="h-5 w-5" />, title: "IA que cria conteudo", desc: "Personas, copies e roteiros gerados automaticamente" },
-  { icon: <BarChart3 className="h-5 w-5" />, title: "Metricas inteligentes", desc: "Dashboard visual com insights acionaveis" },
-  { icon: <Users className="h-5 w-5" />, title: "Personas detalhadas", desc: "Entenda seu publico com jornadas completas" },
-  { icon: <Zap className="h-5 w-5" />, title: "Automacao total", desc: "Agende e publique em todos os canais" },
+  { icon: <Sparkles className="h-5 w-5" />, title: "IA que cria conteúdo", desc: "Personas, cópias e roteiros gerados automaticamente" },
+  { icon: <BarChart3 className="h-5 w-5" />, title: "Métricas inteligentes", desc: "Dashboard visual com insights acionáveis" },
+  { icon: <Users className="h-5 w-5" />, title: "Personas detalhadas", desc: "Entenda seu público com jornadas completas" },
+  { icon: <Zap className="h-5 w-5" />, title: "Automação total", desc: "Agende e publique em todos os canais" },
 ];
 
 export default function HomePage() {
@@ -56,15 +56,15 @@ export default function HomePage() {
             className="mb-8 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Estrategia de conteudo com IA
+            Estratégia de conteúdo com IA
           </motion.div>
 
           <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-            Sua maquina de conteudo, <span className="gradient-text">inteligente e automatica</span>
+            Sua máquina de conteúdo, <span className="gradient-text">inteligente e automática</span>
           </h1>
 
           <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Crie personas, gere conteudo, planeje publicacoes e automatize tudo - em minutos, nao em semanas.
+            Crie personas, gere conteúdo, planeje publicações e automatize tudo — em minutos, não em semanas.
           </p>
 
           <motion.div
@@ -76,12 +76,12 @@ export default function HomePage() {
             <Show when="signed-out">
               <SignUpButton mode="modal" fallbackRedirectUrl="/onboarding">
                 <Button size="lg" className="gap-2 rounded-full px-8 py-6 text-base font-semibold hover:brightness-110">
-                  Comecar
+                  Começar
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </SignUpButton>
               <p className="text-sm text-muted-foreground">
-                Ja tem conta?{" "}
+                Já tem conta?{" "}
                 <SignInButton mode="modal" fallbackRedirectUrl="/onboarding">
                   <span className="cursor-pointer font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">
                     Entrar
