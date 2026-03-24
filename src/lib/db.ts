@@ -55,6 +55,31 @@ export async function ensureSchema() {
     );
   `;
 
+  await sql`
+    CREATE TABLE IF NOT EXISTS ai_usage_daily (
+      user_id TEXT NOT NULL,
+      bucket_date DATE NOT NULL,
+      generation_count INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (user_id, bucket_date)
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT,
+      read_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_notifications_user_created
+    ON notifications (user_id, created_at DESC);
+  `;
+
   return true;
 }
 

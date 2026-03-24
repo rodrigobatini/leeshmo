@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Leeshmo MVP",
-  description: "MVP demoavel com onboarding, IA e calendario editorial",
+  title: "Leeshmo Portal",
+  description: "Portal estrategico com onboarding guiado e jornadas interativas",
 };
 
 export default function RootLayout({
@@ -26,10 +27,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html
-        lang="en"
+        lang="pt-BR"
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
-        <body className="min-h-full flex flex-col">{children}</body>
+        <body className="flex min-h-full flex-col bg-background text-foreground">
+          <ThemeProvider>{children}</ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   );
